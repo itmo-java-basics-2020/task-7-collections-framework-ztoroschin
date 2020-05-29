@@ -1,6 +1,7 @@
 package ru.ifmo.collections;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Design a class which contains integers and returns first unique integer (in order of addition).
@@ -8,7 +9,7 @@ import java.util.LinkedHashMap;
  */
 public class FirstUnique {
 
-    private final LinkedHashMap<Integer, Integer> map;
+    private final Map<Integer, Integer> map;
 
     public FirstUnique(int[] numbers) {
         map = new LinkedHashMap<>();
@@ -27,10 +28,9 @@ public class FirstUnique {
     }
 
     public void add(int value) {
-        if (map.containsKey(value)) {
-            map.put(value, map.get(value) + 1);
-        } else {
-            map.put(value, 1);
-        }
+        map.compute(value, (key, val)
+                -> (val == null)
+                    ? 1
+                    : val + 1);
     }
 }

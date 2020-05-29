@@ -18,7 +18,7 @@ public class LruCache<K, V> extends LinkedHashMap<K, V> {
     private final int capacity;
 
     public LruCache(int capacity) {
-        super(capacity, 0.75f, true);
+        super(capacity, 1f, true);
         this.capacity = capacity;
     }
 

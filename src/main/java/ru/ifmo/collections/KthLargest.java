@@ -1,6 +1,7 @@
 package ru.ifmo.collections;
 
-import java.util.*;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * Design a class to find the kth largest element in a stream. k is from 1 to numbers.length.
@@ -11,67 +12,25 @@ import java.util.*;
  */
 public class KthLargest {
 
-    private final TreeSet<Entry> multiset;
-    private final int k;
-    private int hash = 0;
+    private final Queue<Integer> queue;
 
     public KthLargest(int k, int[] numbers) {
-        this.multiset = new TreeSet<>(Collections.reverseOrder());
-        this.k = k;
+        this.queue = new PriorityQueue<>();
 
         for (var number : numbers) {
-            add(number);
+            queue.add(number);
+        }
+
+        while (queue.size() > k) {
+            queue.remove();
         }
     }
 
     public int add(int value) {
-        multiset.add(new Entry(value, hash++));
-
-        if (k > multiset.size()) return -1;
-        return multiset.stream()
-                .skip(k - 1)
-                .findFirst()
-                .get()
-                .getValue();
-    }
-
-    private static class Entry implements Comparable<Entry> {
-        private final Integer value;
-        private final Integer hash;
-
-        private Entry(Integer value, Integer hash) {
-            this.value = value;
-            this.hash = hash;
+        if (value > queue.peek()) {
+            queue.add(value);
+            queue.remove();
         }
-
-        private Integer getValue() {
-            return value;
-        }
-
-        private Integer getHash() {
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Entry entry = (Entry) o;
-            return Objects.equals(value, entry.value) &&
-                    Objects.equals(hash, entry.hash);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value, hash);
-        }
-
-        @Override
-        public int compareTo(Entry o) {
-            if (value < o.value || (value.equals(o.value) && hash < o.getHash())) {
-                return -1;
-            }
-            return value.equals(o.value) && hash.equals(o.hash) ? 0 : 1;
-        }
+        return queue.peek();
     }
 }

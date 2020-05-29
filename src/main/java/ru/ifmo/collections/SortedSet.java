@@ -1,6 +1,13 @@
 package ru.ifmo.collections;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Represents sorted set of unique values.
@@ -40,47 +47,33 @@ public class SortedSet<T> extends AbstractSet<T> {
     }
 
     public List<T> getReversed() {
-        List<T> arrayList = new ArrayList<>(contents.keySet());
-        Collections.reverse(arrayList);
-        return arrayList;
+        return new ArrayList<>(((TreeMap) contents).descendingKeySet());
     }
 
     @Override
     public boolean add(T t) {
-        boolean notContainsKey = !contents.containsKey(t);
-        if (notContainsKey) {
-            contents.put(t, 0);
-        }
-        return notContainsKey;
+        return contents.put(t, 0) == null;
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
         boolean itemAdded = false;
         for (var item : c) {
-            if (add(item)) {
-                itemAdded = true;
-            }
+            itemAdded |= add(item);
         }
         return itemAdded;
     }
 
     @Override
     public boolean remove(Object o) {
-        boolean containsKey = contents.containsKey(o);
-        if (containsKey) {
-            contents.remove(o);
-        }
-        return containsKey;
+        return contents.remove(o) != null;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean itemRemoved = false;
         for (var item : c) {
-            if (remove(item)) {
-                itemRemoved = true;
-            }
+            itemRemoved |= remove(item);
         }
         return itemRemoved;
     }
